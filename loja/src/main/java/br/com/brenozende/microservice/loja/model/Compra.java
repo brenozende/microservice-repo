@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,4 +19,8 @@ public class Compra {
     private Integer tempoDePreparo;
 
     private String enderecoDestino;
+
+    private LocalDate dataParaEntrega;
+
+    private Long voucher;
 }

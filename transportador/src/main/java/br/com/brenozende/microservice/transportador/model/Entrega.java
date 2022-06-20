@@ -1,13 +1,20 @@
 package br.com.brenozende.microservice.transportador.model;
 
-import java.time.LocalDate;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class Entrega {
 
 	@Id
@@ -24,52 +31,16 @@ public class Entrega {
 	
 	private String enderecoDestino;
 
-	public LocalDate getDataParaBusca() {
-		return dataParaBusca;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Entrega entrega = (Entrega) o;
+		return id != null && Objects.equals(id, entrega.id);
 	}
 
-	public void setDataParaBusca(LocalDate dataParaBusca) {
-		this.dataParaBusca = dataParaBusca;
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
 	}
-
-	public LocalDate getPrevisaoParaEntrega() {
-		return previsaoParaEntrega;
-	}
-
-	public void setPrevisaoParaEntrega(LocalDate previsaoParaEntrega) {
-		this.previsaoParaEntrega = previsaoParaEntrega;
-	}
-
-	public String getEnderecoOrigem() {
-		return enderecoOrigem;
-	}
-
-	public void setEnderecoOrigem(String enderecoOrigem) {
-		this.enderecoOrigem = enderecoOrigem;
-	}
-
-	public String getEnderecoDestino() {
-		return enderecoDestino;
-	}
-
-	public void setEnderecoDestino(String enderecoDestino) {
-		this.enderecoDestino = enderecoDestino;
-	}
-
-	public Long getPedidoId() {
-		return pedidoId;
-	}
-
-	public void setPedidoId(Long pedidoId) {
-		this.pedidoId = pedidoId;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
 }

@@ -1,9 +1,8 @@
 package br.com.brenozende.microservice.loja.service;
 
 import br.com.brenozende.microservice.loja.client.FornecedorClient;
-import br.com.brenozende.microservice.loja.dto.CompraDTO;
-import br.com.brenozende.microservice.loja.dto.InfoFornecedorDTO;
-import br.com.brenozende.microservice.loja.dto.InfoPedidoDTO;
+import br.com.brenozende.microservice.loja.client.TransportadorClient;
+import br.com.brenozende.microservice.loja.dto.*;
 import br.com.brenozende.microservice.loja.model.Compra;
 //import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import br.com.brenozende.microservice.loja.repository.CompraRepository;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -24,6 +24,9 @@ public class CompraService {
 
     @Autowired
     private FornecedorClient fornecedorClient;
+
+    @Autowired
+    private TransportadorClient transportadorClient;
 
     @Autowired
     private CompraRepository compraRepository;
@@ -41,13 +44,22 @@ public class CompraService {
         String estado = compra.getEndereco().getEstado();
         log.info("Buscando informações do fornecedor de {}", estado);
         InfoFornecedorDTO info = fornecedorClient.getInfoPorEstado(estado);
-        if (info != null)
-            log.info("Endereço do fornecedor de {}: {}", estado,info.getEndereco());
-        else
+        if (info == null) {
             log.info("Não foi encontrado fornecedor para essa região");
+            return null;
+        }
+
+        log.info("Endereço do fornecedor de {}: {}", estado,info.getEndereco());
 
         log.info("Realizando um pedido");
         InfoPedidoDTO pedido = fornecedorClient.realizaPedido(compra.getItens());
+
+        InfoEntregaDTO entregaDTO = new InfoEntregaDTO();
+        entregaDTO.setPedidoId(pedido.getId());
+        entregaDTO.setDataParaEntrega(LocalDate.now().plusDays(pedido.getTempoDePreparo()));
+        entregaDTO.setEnderecoOrigem(info.getEndereco());
+        entregaDTO.setEnderecoDestino(compra.getEndereco().toString());
+        VoucherDTO voucher = transportadorClient.reservaEntrega(entregaDTO);
 
 
 
@@ -55,6 +67,8 @@ public class CompraService {
         compraSalva.setPedidoId(pedido.getId());
         compraSalva.setTempoDePreparo(pedido.getTempoDePreparo());
         compraSalva.setEnderecoDestino(compra.getEndereco().toString());
+        compraSalva.setDataParaEntrega(voucher.getPrevisaoParaEntrega());
+        compraSalva.setVoucher(voucher.getNumero());
         compraRepository.save(compraSalva);
 
 
