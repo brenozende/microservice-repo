@@ -1,9 +1,9 @@
 package br.com.brenozende.microservice.loja.model;
 
+import br.com.brenozende.microservice.loja.enums.CompraStatus;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
@@ -14,6 +14,9 @@ import java.time.LocalDate;
 public class Compra {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Long pedidoId;
 
     private Integer tempoDePreparo;
@@ -23,4 +26,7 @@ public class Compra {
     private LocalDate dataParaEntrega;
 
     private Long voucher;
+
+    @Enumerated(EnumType.STRING)
+    private CompraStatus status;
 }

@@ -13,7 +13,7 @@ public class InfoService {
     @Autowired
     private InfoRepository infoRepository;
     public InfoFornecedor getInfoPorEstado(String estado) {
-        log.info("Informações buscadas");
+        log.info("Buscando informações do fornecedor de {}", estado);
         return infoRepository.findByEstado(estado);
     }
 }
