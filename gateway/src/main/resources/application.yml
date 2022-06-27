@@ -9,6 +9,8 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+#          filters:
+#            - TokenRelay=
 
 server:
   port: 5555

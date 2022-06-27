@@ -4,6 +4,8 @@ import br.com.brenozende.microservice.loja.dto.CompraDTO;
 import br.com.brenozende.microservice.loja.model.Compra;
 import br.com.brenozende.microservice.loja.service.CompraService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 

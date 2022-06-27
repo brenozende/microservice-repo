@@ -34,7 +34,7 @@ public class CompraService {
         return result.orElse(null);
     }
 
-    @HystrixCommand(fallbackMethod = "realizaCompraFallback")
+    @HystrixCommand(fallbackMethod = "realizaCompraFallback", threadPoolKey = "realizaCompraThreadPool")
     public Compra realizaCompra(CompraDTO compra) {
 
         Compra compraSalva = new Compra();
